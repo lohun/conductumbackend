@@ -9,18 +9,16 @@ const router = express.Router();
 
 // Create a new job
 router.post('/', async (req: Request, res: Response) => {
-    const { title, job_requirements, job_description, deadline, location, company_name, job_type } = req.body;
+    const { title, requirements, description, deadline, location, company, type } = req.body;
 
     try {
-        const organizations = await auth.api.listOrganizations({
-            headers: fromNodeHeaders(req.headers),
-        });
+        const { organization } = await identifyUsersByCookies(req);
 
-        const organization_id = organizations[0]!.id
+        const organizationId = organization?.organizationId;
 
         const { data, error } = await supabase
             .from('job')
-            .insert([{ title, location, company_name, job_type, job_requirements, job_description, deadline, organization_id }])
+            .insert([{ title, location, company_name: company, job_type: type, job_requirements: requirements, job_description: description, deadline, organization_id: organizationId }])
             .select();
 
         if (error) throw error;
@@ -36,16 +34,13 @@ router.post('/', async (req: Request, res: Response) => {
 // get all jobs in organization
 router.get("/jobs", async (req: Request, res: Response) => {
     try {
-        const organizations = await auth.api.listOrganizations({
-            headers: fromNodeHeaders(req.headers),
-        });
+        const { organization } = await identifyUsersByCookies(req);
 
-        const organization_id = organizations[0]!.id
 
         const { data, error } = await supabase
             .from('job')
-            .select('*, organization(*)')
-            .eq("organization.id", organization_id);
+            .select('*, organization!inner(*)')
+            .eq("organization.id", organization?.organizationId);
 
         if (error) throw error;
         res.status(200).json(data);

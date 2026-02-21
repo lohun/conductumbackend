@@ -37,11 +37,11 @@ jobsRouter.post('/:id/apply', async (req: Request, res: Response) => {
     } = req.body;
 
     const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY! });
-    const resume = JSON.stringify({ resume: req.body })
+    const resume = JSON.stringify({ resume: req.body });
 
     const prompt = `Role: Act as an expert Senior Technical Recruiter and ATS Parser.
 
-        Task: Compare the provided [Resume] against the [Job Description] and [Jon Requirements]. Assign a total Suitability Score out of 100 based on the following weighted criteria:
+        Task: Compare the provided [Resume] against the [Job Description] and [Job Requirements]. Assign a total Suitability Score out of 100 based on the following weighted criteria:
 
         Core Hard Skills (40%): Does the candidate possess the "Must-Have" technical tools and certifications? Do the skills match the context of their experience or projects?
 
@@ -61,9 +61,8 @@ jobsRouter.post('/:id/apply', async (req: Request, res: Response) => {
 
         Missing Gaps: (List specific missing keywords or experiences)
 
-        Interview Recommendation: [Yes/No/Maybe] and why.
-
-        Constraint: Be objective. If a skill is not explicitly stated or implied by context, do not award points for it.`
+        Constraint: Be objective. If a skill is not explicitly stated or implied by context, do not award points for it.
+        Do not give recommendations or opinions`
 
     const contents = [prompt, `[Resume] ${resume}`, `[Job Requirements] ${job.job_requirements}`, `[Job Description] ${job.job_description}`]
 
