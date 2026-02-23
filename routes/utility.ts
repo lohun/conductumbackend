@@ -1,4 +1,3 @@
-// 
 import type { Request } from 'express';
 import { auth } from '../auth.ts';
 import { fromNodeHeaders } from 'better-auth/node';
