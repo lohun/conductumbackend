@@ -2,7 +2,6 @@ import express from 'express';
 import type { Request, Response } from 'express';
 import { supabase } from '../client.ts';
 import { GoogleGenAI } from '@google/genai';
-import { identifyUsersByCookies } from './utility.ts';
 
 const jobsRouter = express.Router();
 
@@ -62,7 +61,13 @@ jobsRouter.post('/:id/apply', async (req: Request, res: Response) => {
         Missing Gaps: (List specific missing keywords or experiences)
 
         Constraint: Be objective. If a skill is not explicitly stated or implied by context, do not award points for it.
-        Do not give recommendations or opinions`
+        Do not give recommendations or opinions.
+        Note result must be returned as JSON in the structure
+        {
+            match_category: string,
+            key_strenghts: string,
+            missing_gaps: string,
+        } and nothing else. no keywords before or after and no markings like \\n as the response will be on a html page `
 
     const contents = [prompt, `[Resume] ${resume}`, `[Job Requirements] ${job.job_requirements}`, `[Job Description] ${job.job_description}`]
 
@@ -71,7 +76,9 @@ jobsRouter.post('/:id/apply', async (req: Request, res: Response) => {
         contents: contents,
     });
 
+
     const ats = response.text;
+    console.log(JSON.parse(ats!))
 
     try {
         const { data, error } = await supabase
@@ -115,6 +122,28 @@ jobsRouter.get("/", async (req: Request, res: Response) => {
 
         if (error) throw error;
         res.status(200).json(data);
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({ error: 'Failed to fetch jobs' });
+    }
+})
+
+
+
+jobsRouter.get("/:id", async (req: Request, res: Response) => {
+    try {
+        const { id } = req.params;
+        const { data: job, error: jobError } = await supabase
+            .from('job')
+            .select('*')
+            .eq('id', id)
+            .single();
+
+        if (jobError || !job) {
+            return res.status(404).json({ error: 'Job not found' });
+        }
+
+        res.status(200).json(job);
     } catch (error) {
         console.log(error)
         res.status(500).json({ error: 'Failed to fetch jobs' });

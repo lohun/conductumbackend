@@ -4,6 +4,7 @@ import cors from 'cors';
 import { auth } from "./auth.ts";
 import jobsRouter from './routes/jobs.ts'
 import HRRouter from './routes/hr.ts'
+import resumeRouter from './routes/resume.ts'
 import cookieParser from "cookie-parser";
 import { config } from 'dotenv';
 config();
@@ -30,6 +31,8 @@ app.use(express.json());
 app.use('/api/jobs', jobsRouter);
 
 app.use('/api/recruiter', HRRouter);
+
+app.use('/api/resume', resumeRouter);
 
 
 app.listen(port, () => {

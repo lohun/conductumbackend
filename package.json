@@ -12,20 +12,27 @@
   "license": "ISC",
   "type": "module",
   "dependencies": {
+    "@chroma-core/default-embed": "^0.1.9",
+    "@chroma-core/sentence-transformer": "^0.1.0",
     "@google/genai": "^1.41.0",
     "@supabase/supabase-js": "^2.96.0",
     "@types/express-list-endpoints": "^6.0.3",
     "better-auth": "^1.4.18",
+    "chromadb": "^3.3.1",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.6",
     "dotenv": "^17.3.1",
     "express": "^5.2.1",
-    "pg": "^8.18.0"
+    "multer": "^2.0.2",
+    "pdf-parse-new": "^2.0.0",
+    "pg": "^8.18.0",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "@types/cookie-parser": "^1.4.10",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
+    "@types/multer": "^2.0.0",
     "@types/node": "^25.2.3",
     "@types/pg": "^8.16.0",
     "nodemon": "^3.1.11",
