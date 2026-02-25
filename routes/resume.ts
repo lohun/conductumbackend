@@ -2,7 +2,6 @@ import express from 'express';
 import type { Request, Response } from 'express';
 import multer from 'multer';
 import pdfParse from 'pdf-parse-new';
-// import { identifyUsersByCookies } from './utility.ts';
 import { ChromaClient } from 'chromadb';
 import { SentenceTransformersEmbeddingFunction } from '@chroma-core/sentence-transformer';
 import { GoogleGenAI } from '@google/genai';
@@ -21,11 +20,6 @@ const sentenceTransformerEF = new SentenceTransformersEmbeddingFunction({
 });
 router.post('/parse', upload.single('resume'), async (req: Request, res: Response) => {
     try {
-        // const { user } = await identifyUsersByCookies(req);
-        // if (!user) {
-        //     return res.status(401).json({ error: 'Unauthorized' });
-        // }
-
         if (!req.file) {
             return res.status(400).json({ error: 'No file uploaded' });
         }

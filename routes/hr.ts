@@ -2,8 +2,6 @@ import express from 'express';
 import type { Request, Response } from 'express';
 import { supabase } from '../client.ts'
 import { identifyUsersByCookies } from './utility.ts'
-import { auth } from '../auth.ts';
-import { fromNodeHeaders } from 'better-auth/node';
 
 const router = express.Router();
 
@@ -81,6 +79,44 @@ router.patch("/applications/:id/status", async (req: Request, res: Response) => 
         }
 
         res.status(200).json({ message: 'Status updated successfully' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+
+// update application status
+router.patch("/applications/status", async (req: Request, res: Response) => {
+    try {
+        const { user } = await identifyUsersByCookies(req);
+        if (!user) {
+            return res.status(401).json({ error: 'Unauthorized' });
+        }
+
+        const { ids, status, reason } = req.body;
+
+        if (!status || !Array.isArray(ids)) {
+            return res.status(400).json({ error: 'Status and an array of ids are required' });
+        }
+
+        // Execute all updates in parallel
+        const results = await Promise.all(ids.map(id =>
+            supabase.rpc('update_application_status', {
+                p_application_id: id,
+                p_new_status: status,
+                p_reason: reason,
+                p_user_id: user.id
+            })
+        ));
+
+        const firstError = results.find(r => r.error);
+        if (firstError) {
+            console.error('Error updating application statuses:', firstError.error);
+            return res.status(400).json({ error: 'Failed to update statuses' });
+        }
+
+        res.status(200).json({ message: 'Statuses updated successfully' });
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Internal server error' });
@@ -165,6 +201,35 @@ router.get("/applications/:id", async (req: Request, res: Response) => {
     }
 });
 
+// get applicants
+router.get("/applications/:jobId/:id", async (req: Request, res: Response) => {
+    try {
+        const { jobId, id } = req.params;
+        const { organization } = await identifyUsersByCookies(req);
+
+        if (!organization) {
+            return res.status(401).json({ error: 'Unauthorized' });
+        }
+
+        const { data: application, error } = await supabase
+            .from('applicant')
+            .select(`
+                *
+            `)
+            .eq("id", id)
+            .eq("job_id", jobId)
+            .single();
+
+        if (error) throw error;
+
+        res.status(200).json(application);
+    }
+    catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Failed to fetch applications' });
+    }
+})
+
 // Send email to candidate using Brevo
 router.post("/contact-candidate", async (req: Request, res: Response) => {
     try {
@@ -208,7 +273,7 @@ router.post("/contact-candidate", async (req: Request, res: Response) => {
             }
 
             const emailData = {
-                sender: { email: "no-reply@conductum.com", name: "Conductum ATS" },
+                sender: { email: "no-reply@brevosend.com", name: "Conductum ATS" },
                 to: [{ email: application.email, name: application.name }],
                 subject: "Update on your application",
                 htmlContent: htmlContent
