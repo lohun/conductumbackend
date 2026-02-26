@@ -11,7 +11,7 @@ import PdfParse from 'pdf-parse-new';
 const router = express.Router();
 
 // Define the file filter function
-const pdfFileFilter = (req, file, cb) => {
+const pdfFileFilter = (req: Request, file: any, cb: any) => {
     // Allowed MIME types
     const allowedMimes = ['application/pdf'];
     // Check if the file's mimetype is in the allowed list
