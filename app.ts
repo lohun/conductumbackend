@@ -35,6 +35,8 @@ app.use('/api/recruiter', HRRouter);
 app.use('/api/resume', resumeRouter);
 
 
-app.listen(port, () => {
-    console.log(`Better Auth app listening on port ${port}`);
-});
+// app.listen(port, () => {
+//     console.log(`Better Auth app listening on port ${port}`);
+// });
+
+export default app;

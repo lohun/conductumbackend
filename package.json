@@ -16,6 +16,7 @@
     "@chroma-core/default-embed": "^0.1.9",
     "@chroma-core/sentence-transformer": "^0.1.0",
     "@google/genai": "^1.41.0",
+    "@netlify/functions": "^5.1.2",
     "@supabase/supabase-js": "^2.96.0",
     "@types/express-list-endpoints": "^6.0.3",
     "better-auth": "^1.4.18",
@@ -30,6 +31,7 @@
     "multer": "^2.0.2",
     "pdf-parse-new": "^2.0.0",
     "pg": "^8.18.0",
+    "serverless-http": "^4.0.0",
     "winston": "^3.19.0",
     "zod": "^4.3.6"
   },
