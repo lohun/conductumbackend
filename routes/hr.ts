@@ -273,7 +273,7 @@ router.post("/contact-candidate", async (req: Request, res: Response) => {
             }
 
             const emailData = {
-                sender: { email: "no-reply@brevosend.com", name: "Conductum ATS" },
+                sender: { email: "nwankpele@gmail.com", name: "Conductum ATS" },
                 to: [{ email: application.email, name: application.name }],
                 subject: "Update on your application",
                 htmlContent: htmlContent
@@ -288,6 +288,7 @@ router.post("/contact-candidate", async (req: Request, res: Response) => {
                 },
                 body: JSON.stringify(emailData)
             });
+            console.log(response)
 
             if (!response.ok) {
                 const errorData = await response.json();
