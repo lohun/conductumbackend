@@ -112,7 +112,7 @@ Follow these Data Structure Mapping Rules:
 - Null Safety: If a field is not found, return an empty string "", NOT null or undefined.
 - Date Normalization: Ensure the period field in work_experience remains as string text (e.g. "2021 - Present").
 -skills: An array of all skills written
--
+-certifications: An array of the names of any professional certificate awarded in a line.
 
 Here is the parsed context from the resume:
 ${uniqueChunks.join("\n\n---\n\n")}
@@ -138,7 +138,8 @@ ${uniqueChunks.join("\n\n---\n\n")}
                 institution: z.string().default(""),
                 degree: z.string().default(""),
                 year: z.string().default("")
-            })).default([])
+            })).default([]),
+            certifications: z.array(z.string()).default([])
         });
 
         systemLogger.info(`Resume: STARTING AI GENERATION FOR EXTRACTION`);

@@ -86,3 +86,15 @@
 {"level":"info","message":"Resume: DELETED CHROMADB COLLECTION: resume_1772140335377","timestamp":"2026-02-26T21:15:03.002Z"}
 {"level":"info","message":"Resume: PARSED AI JSON RESPONSE","timestamp":"2026-02-26T21:15:03.006Z"}
 {"level":"info","message":"Resume: VALIDATED RESPONSE WITH ZOD","timestamp":"2026-02-26T21:15:03.030Z"}
+{"level":"info","message":"Resume: STARTING RESUME PARSE","timestamp":"2026-02-26T23:03:39.178Z"}
+{"level":"info","message":"Resume: RECEIVED FILE: Nwankpele Damilola.pdf, SIZE: 143570 bytes","timestamp":"2026-02-26T23:03:39.190Z"}
+{"level":"info","message":"Resume: PDF PARSED SUCCESSFULLY","timestamp":"2026-02-26T23:03:40.008Z"}
+{"level":"info","message":"Resume: CREATED 2 CHUNKS FROM PDF","timestamp":"2026-02-26T23:03:40.011Z"}
+{"level":"info","message":"Resume: CREATING CHROMADB COLLECTION: resume_1772147020012","timestamp":"2026-02-26T23:03:40.012Z"}
+{"level":"info","message":"Resume: ADDED CHUNKS TO CHROMADB","timestamp":"2026-02-26T23:03:45.835Z"}
+{"level":"info","message":"Resume: QUERIED CHROMADB FOR TOP CHUNKS","timestamp":"2026-02-26T23:03:46.325Z"}
+{"level":"info","message":"Resume: STARTING AI GENERATION FOR EXTRACTION","timestamp":"2026-02-26T23:03:46.349Z"}
+{"level":"info","message":"Resume: AI RESPONSE RECEIVED","timestamp":"2026-02-26T23:03:59.700Z"}
+{"level":"info","message":"Resume: DELETED CHROMADB COLLECTION: resume_1772147020012","timestamp":"2026-02-26T23:04:00.455Z"}
+{"level":"info","message":"Resume: PARSED AI JSON RESPONSE","timestamp":"2026-02-26T23:04:00.457Z"}
+{"level":"info","message":"Resume: VALIDATED RESPONSE WITH ZOD","timestamp":"2026-02-26T23:04:00.473Z"}
