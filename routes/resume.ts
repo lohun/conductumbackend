@@ -86,7 +86,7 @@ router.post('/parse', upload.single('resume'), async (req: Request, res: Respons
 
         // Querying top chunks
         const queryResults = await collection.query({
-            queryTexts: ["skills education experience projects contact work"],
+            queryTexts: ["skills education experience projects project contact work certificates certificate"],
             nResults: Math.min(chunks.length, 10),
         });
         systemLogger.info(`Resume: QUERIED CHROMADB FOR TOP CHUNKS`);
@@ -112,6 +112,7 @@ Follow these Data Structure Mapping Rules:
 - Null Safety: If a field is not found, return an empty string "", NOT null or undefined.
 - Date Normalization: Ensure the period field in work_experience remains as string text (e.g. "2021 - Present").
 -skills: An array of all skills written
+-
 
 Here is the parsed context from the resume:
 ${uniqueChunks.join("\n\n---\n\n")}
