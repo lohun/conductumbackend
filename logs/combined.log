@@ -98,3 +98,9 @@
 {"level":"info","message":"Resume: DELETED CHROMADB COLLECTION: resume_1772147020012","timestamp":"2026-02-26T23:04:00.455Z"}
 {"level":"info","message":"Resume: PARSED AI JSON RESPONSE","timestamp":"2026-02-26T23:04:00.457Z"}
 {"level":"info","message":"Resume: VALIDATED RESPONSE WITH ZOD","timestamp":"2026-02-26T23:04:00.473Z"}
+{"level":"info","message":"Recruiter: GET APPLICATIONS FOR JOB ID: 6478004c-e357-4fbc-bff7-c5d0047852e0","timestamp":"2026-02-26T23:30:34.463Z"}
+{"level":"info","message":"Utility: IDENTIFYING USER BY COOKIES","timestamp":"2026-02-26T23:30:34.473Z"}
+{"level":"info","message":"Utility: SESSION FOUND FOR USER ID: eKpxnY6R3miIWTQTBFp4qgLRakzVOM0c","timestamp":"2026-02-26T23:30:35.662Z"}
+{"level":"info","message":"Utility: ORGANIZATION IDENTIFIED: 37n5FTPZUWPniAZhFBqvnYdsv14GlHmp","timestamp":"2026-02-26T23:30:36.430Z"}
+{"level":"info","message":"Recruiter: ORGANIZATION ID: 37n5FTPZUWPniAZhFBqvnYdsv14GlHmp","timestamp":"2026-02-26T23:30:36.431Z"}
+{"level":"info","message":"Recruiter: RETURNED 8 APPLICATIONS","timestamp":"2026-02-26T23:30:36.695Z"}
