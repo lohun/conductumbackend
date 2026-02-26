@@ -1,0 +1,4 @@
+{"level":"error","message":"Resume: PDF PARSE ERROR: ReferenceError: pdfParse is not defined","timestamp":"2026-02-26T20:58:43.769Z"}
+{"level":"error","message":"Resume: PDF PARSE ERROR: ReferenceError: pdfParse is not defined","timestamp":"2026-02-26T20:59:08.331Z"}
+{"level":"error","message":"Resume: PARSING ERROR: TypeError: terminated","timestamp":"2026-02-26T21:05:53.742Z"}
+{"level":"error","message":"Resume: PARSING ERROR: TypeError: terminated","timestamp":"2026-02-26T21:05:53.755Z"}

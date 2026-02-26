@@ -52,3 +52,37 @@
 {"level":"info","message":"Recruiter: FOUND 4 APPLICANTS FOR AI CONTEXT","timestamp":"2026-02-26T19:46:54.133Z"}
 {"level":"info","message":"Recruiter: AI RESPONSE GENERATED","timestamp":"2026-02-26T19:47:07.775Z"}
 {"level":"info","message":"Recruiter: AI TEXT: undefined","timestamp":"2026-02-26T19:47:07.778Z"}
+{"level":"info","message":"Resume: STARTING RESUME PARSE","timestamp":"2026-02-26T20:52:58.921Z"}
+{"level":"warn","message":"Resume: NO FILE UPLOADED","timestamp":"2026-02-26T20:52:58.934Z"}
+{"level":"info","message":"Resume: STARTING RESUME PARSE","timestamp":"2026-02-26T20:58:06.034Z"}
+{"level":"warn","message":"Resume: NO FILE UPLOADED","timestamp":"2026-02-26T20:58:06.047Z"}
+{"level":"info","message":"Resume: STARTING RESUME PARSE","timestamp":"2026-02-26T20:58:43.765Z"}
+{"level":"info","message":"Resume: RECEIVED FILE: Nwankpele Damilola.pdf, SIZE: 143570 bytes","timestamp":"2026-02-26T20:58:43.767Z"}
+{"level":"error","message":"Resume: PDF PARSE ERROR: ReferenceError: pdfParse is not defined","timestamp":"2026-02-26T20:58:43.769Z"}
+{"level":"info","message":"Resume: STARTING RESUME PARSE","timestamp":"2026-02-26T20:59:08.327Z"}
+{"level":"info","message":"Resume: RECEIVED FILE: Nwankpele Damilola.pdf, SIZE: 143570 bytes","timestamp":"2026-02-26T20:59:08.330Z"}
+{"level":"error","message":"Resume: PDF PARSE ERROR: ReferenceError: pdfParse is not defined","timestamp":"2026-02-26T20:59:08.331Z"}
+{"level":"info","message":"Resume: STARTING RESUME PARSE","timestamp":"2026-02-26T21:01:24.685Z"}
+{"level":"info","message":"Resume: RECEIVED FILE: Nwankpele Damilola.pdf, SIZE: 143570 bytes","timestamp":"2026-02-26T21:01:24.698Z"}
+{"level":"info","message":"Resume: PDF PARSED SUCCESSFULLY","timestamp":"2026-02-26T21:01:25.472Z"}
+{"level":"info","message":"Resume: CREATED 2 CHUNKS FROM PDF","timestamp":"2026-02-26T21:01:25.475Z"}
+{"level":"info","message":"Resume: CREATING CHROMADB COLLECTION: resume_1772139685477","timestamp":"2026-02-26T21:01:25.477Z"}
+{"level":"info","message":"Resume: STARTING RESUME PARSE","timestamp":"2026-02-26T21:05:15.986Z"}
+{"level":"info","message":"Resume: RECEIVED FILE: Nwankpele Damilola.pdf, SIZE: 143570 bytes","timestamp":"2026-02-26T21:05:15.988Z"}
+{"level":"info","message":"Resume: PDF PARSED SUCCESSFULLY","timestamp":"2026-02-26T21:05:16.702Z"}
+{"level":"info","message":"Resume: CREATED 2 CHUNKS FROM PDF","timestamp":"2026-02-26T21:05:16.705Z"}
+{"level":"info","message":"Resume: CREATING CHROMADB COLLECTION: resume_1772139916707","timestamp":"2026-02-26T21:05:16.707Z"}
+{"level":"error","message":"Resume: PARSING ERROR: TypeError: terminated","timestamp":"2026-02-26T21:05:53.742Z"}
+{"level":"error","message":"Resume: PARSING ERROR: TypeError: terminated","timestamp":"2026-02-26T21:05:53.755Z"}
+{"level":"info","message":"Resume: STARTING RESUME PARSE","timestamp":"2026-02-26T21:12:14.522Z"}
+{"level":"info","message":"Resume: RECEIVED FILE: Nwankpele Damilola.pdf, SIZE: 143570 bytes","timestamp":"2026-02-26T21:12:14.535Z"}
+{"level":"info","message":"Resume: PDF PARSED SUCCESSFULLY","timestamp":"2026-02-26T21:12:15.372Z"}
+{"level":"info","message":"Resume: CREATED 2 CHUNKS FROM PDF","timestamp":"2026-02-26T21:12:15.376Z"}
+{"level":"info","message":"Resume: CREATING CHROMADB COLLECTION: resume_1772140335377","timestamp":"2026-02-26T21:12:15.377Z"}
+{"level":"info","message":"Resume: ADDED CHUNKS TO CHROMADB","timestamp":"2026-02-26T21:14:51.073Z"}
+{"level":"info","message":"Resume: QUERIED CHROMADB FOR TOP CHUNKS","timestamp":"2026-02-26T21:14:51.602Z"}
+{"level":"info","message":"Resume: STARTING AI GENERATION FOR EXTRACTION","timestamp":"2026-02-26T21:14:51.654Z"}
+{"level":"info","message":"Resume: AI RESPONSE RECEIVED","timestamp":"2026-02-26T21:15:02.246Z"}
+{"level":"info","message":"Resume: DELETED CHROMADB COLLECTION: resume_1772140335377","timestamp":"2026-02-26T21:15:03.002Z"}
+{"level":"info","message":"Resume: PARSED AI JSON RESPONSE","timestamp":"2026-02-26T21:15:03.006Z"}
+{"level":"info","message":"Resume: VALIDATED RESPONSE WITH ZOD","timestamp":"2026-02-26T21:15:03.030Z"}

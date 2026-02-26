@@ -3,14 +3,40 @@ import { systemLogger } from '../logger.ts';
 import express, { type Request, type Response } from 'express';
 import multer from 'multer';
 import { GoogleGenAI } from '@google/genai';
-import { ChromaClient } from 'chromadb';
+import { CloudClient } from 'chromadb';
 import { SentenceTransformersEmbeddingFunction } from '@chroma-core/sentence-transformer';
+import path from 'path';
+import PdfParse from 'pdf-parse-new';
 
 const router = express.Router();
-const upload = multer({ storage: multer.memoryStorage() });
+
+// Define the file filter function
+const pdfFileFilter = (req, file, cb) => {
+    // Allowed MIME types
+    const allowedMimes = ['application/pdf'];
+    // Check if the file's mimetype is in the allowed list
+    const isMimeTypeAllowed = allowedMimes.includes(file.mimetype);
+
+    // Allowed file extensions (regex for robust checking)
+    const allowedExts = /.pdf$/;
+    // Check if the file extension matches the regex
+    const isExtAllowed = allowedExts.test(path.extname(file.originalname).toLowerCase());
+
+    if (isMimeTypeAllowed && isExtAllowed) {
+        // Accept the file
+        cb(null, true);
+    } else {
+        // Reject the file and return an error message
+        cb(new Error('Invalid file type, only PDF is allowed!'), false);
+    }
+};
+const upload = multer({
+    storage: multer.memoryStorage(),
+    fileFilter: pdfFileFilter, // Pass the filter function created above
+});
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY as string });
-const chromaClient = new ChromaClient();
+const chromaClient = new CloudClient();
 const sentenceTransformerEF = new SentenceTransformersEmbeddingFunction({
     modelName: "all-MiniLM-L6-v2",
     device: "cpu",
@@ -28,7 +54,7 @@ router.post('/parse', upload.single('resume'), async (req: Request, res: Respons
         let pdfData;
         try {
             // @ts-ignore
-            pdfData = await pdfParse(req.file.buffer);
+            pdfData = await PdfParse(req.file.buffer);
             systemLogger.info(`Resume: PDF PARSED SUCCESSFULLY`);
         } catch (error) {
             systemLogger.error(`Resume: PDF PARSE ERROR: ${error}`);
