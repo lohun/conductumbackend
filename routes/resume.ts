@@ -1,12 +1,10 @@
-import express from 'express';
-import type { Request, Response } from 'express';
+import { z } from 'zod';
+import { systemLogger } from '../logger.ts';
+import express, { type Request, type Response } from 'express';
 import multer from 'multer';
-import pdfParse from 'pdf-parse-new';
+import { GoogleGenAI } from '@google/genai';
 import { ChromaClient } from 'chromadb';
 import { SentenceTransformersEmbeddingFunction } from '@chroma-core/sentence-transformer';
-import { GoogleGenAI } from '@google/genai';
-import { z } from 'zod';
-
 
 const router = express.Router();
 const upload = multer({ storage: multer.memoryStorage() });
@@ -19,16 +17,21 @@ const sentenceTransformerEF = new SentenceTransformersEmbeddingFunction({
     normalizeEmbeddings: false,
 });
 router.post('/parse', upload.single('resume'), async (req: Request, res: Response) => {
+    systemLogger.info(`Resume: STARTING RESUME PARSE`);
     try {
         if (!req.file) {
+            systemLogger.warn(`Resume: NO FILE UPLOADED`);
             return res.status(400).json({ error: 'No file uploaded' });
         }
+        systemLogger.info(`Resume: RECEIVED FILE: ${req.file.originalname}, SIZE: ${req.file.size} bytes`);
 
         let pdfData;
         try {
             // @ts-ignore
             pdfData = await pdfParse(req.file.buffer);
+            systemLogger.info(`Resume: PDF PARSED SUCCESSFULLY`);
         } catch (error) {
+            systemLogger.error(`Resume: PDF PARSE ERROR: ${error}`);
             return res.status(422).json({ error: 'PDF text layer not accessible.' });
         }
 
@@ -39,8 +42,10 @@ router.post('/parse', upload.single('resume'), async (req: Request, res: Respons
         const chunks = rawChunks
             .map((chunk: string) => chunk.replace(/[\u0000-\u001F\u007F-\u009F]/g, "").replace(/\s+/g, " ").trim())
             .filter((chunk: string) => chunk.length > 0);
+        systemLogger.info(`Resume: CREATED ${chunks.length} CHUNKS FROM PDF`);
 
         const collectionName = `resume_${Date.now()}`;
+        systemLogger.info(`Resume: CREATING CHROMADB COLLECTION: ${collectionName}`);
         const collection = await chromaClient.createCollection({ name: collectionName, embeddingFunction: sentenceTransformerEF });
 
         const ids = chunks.map((_: string, i: number) => `chunk_${i}`);
@@ -51,13 +56,14 @@ router.post('/parse', upload.single('resume'), async (req: Request, res: Respons
             documents: chunks,
             metadatas,
         });
-        console.log(collection);
+        systemLogger.info(`Resume: ADDED CHUNKS TO CHROMADB`);
 
         // Querying top chunks
         const queryResults = await collection.query({
             queryTexts: ["skills education experience projects contact work"],
             nResults: Math.min(chunks.length, 10),
         });
+        systemLogger.info(`Resume: QUERIED CHROMADB FOR TOP CHUNKS`);
 
         const headerChunk = chunks[0] || "";
         const retrievedChunks = [headerChunk, ...(queryResults.documents[0] as string[] || [])];
@@ -108,6 +114,7 @@ ${uniqueChunks.join("\n\n---\n\n")}
             })).default([])
         });
 
+        systemLogger.info(`Resume: STARTING AI GENERATION FOR EXTRACTION`);
         const response = await ai.models.generateContent({
             model: 'gemini-2.5-flash',
             contents: prompt,
@@ -116,19 +123,23 @@ ${uniqueChunks.join("\n\n---\n\n")}
                 responseMimeType: "application/json",
             }
         });
+        systemLogger.info(`Resume: AI RESPONSE RECEIVED`);
 
         try {
             await chromaClient.deleteCollection({ name: collectionName });
+            systemLogger.info(`Resume: DELETED CHROMADB COLLECTION: ${collectionName}`);
         } catch (e) {
-            console.error("Failed to delete chroma collection", e);
+            systemLogger.error(`Resume: FAILED TO DELETE CHROMADB COLLECTION: ${e}`);
         }
 
         const jsonResp = JSON.parse(response.text || "{}");
+        systemLogger.info(`Resume: PARSED AI JSON RESPONSE`);
         const validatedResponse = responseSchema.parse(jsonResp);
+        systemLogger.info(`Resume: VALIDATED RESPONSE WITH ZOD`);
 
         res.status(200).json(validatedResponse);
     } catch (error) {
-        console.error("Resume parsing error", error);
+        systemLogger.error(`Resume: PARSING ERROR: ${error}`);
         res.status(500).json({ error: 'Failed to process resume' });
     }
 });

@@ -1,44 +1,64 @@
-import express from 'express';
-import type { Request, Response } from 'express';
-import { supabase } from '../client.ts';
 import { GoogleGenAI } from '@google/genai';
+import { supabase } from '../client.ts';
+import { systemLogger } from '../logger.ts';
+import express, { type Request, type Response } from 'express';
+import { body, param } from 'express-validator';
+import { handleValidationErrors } from './validationMiddleware.ts';
+
 
 const jobsRouter = express.Router();
 
 // Receive a new applicant for a job
-jobsRouter.post('/:id/apply', async (req: Request, res: Response) => {
-    const { id } = req.params;
-    const { data: job, error: jobError } = await supabase
-        .from('job')
-        .select('*')
-        .eq('id', id)
-        .single();
+jobsRouter.post('/:id/apply',
+    [
+        param('id').isString().notEmpty().withMessage('Job ID must be provided'),
+        body('name').isString().notEmpty().withMessage('Name must be a non-empty string'),
+        body('email').isEmail().withMessage('Email must be valid'),
+        body('telephone').isString().notEmpty().withMessage('Telephone must be a non-empty string'),
+        body('linkedin').optional().isURL().withMessage('LinkedIn must be a valid URL if provided'),
+        body('github').optional().isURL().withMessage('GitHub must be a valid URL if provided'),
+        body('facebook').optional().isURL().withMessage('Facebook must be a valid URL if provided'),
+        body('twitter').optional().isURL().withMessage('Twitter must be a valid URL if provided'),
+        body('dribbble').optional().isURL().withMessage('Dribbble must be a valid URL if provided'),
+        body('behance').optional().isURL().withMessage('Behance must be a valid URL if provided'),
+    ],
+    handleValidationErrors,
+    async (req: Request, res: Response) => {
+        const { id } = req.params;
+        systemLogger.info(`Jobs: NEW APPLICATION FOR JOB ID: ${id}`);
+        const { data: job, error: jobError } = await supabase
+            .from('job')
+            .select('*')
+            .eq('id', id)
+            .single();
 
-    if (jobError || !job) {
-        return res.status(404).json({ error: 'Job not found' });
-    }
+        if (jobError || !job) {
+            systemLogger.error(`Jobs: JOB NOT FOUND OR DB ERROR: ${jobError?.message}`);
+            return res.status(404).json({ error: 'Job not found' });
+        }
 
-    const {
-        name,
-        email,
-        linkedin,
-        github,
-        facebook,
-        twitter,
-        dribbble,
-        behance,
-        telephone,
-        work_experience,
-        education,
-        skills,
-        projects,
-        certifications
-    } = req.body;
+        const {
+            name,
+            email,
+            linkedin,
+            github,
+            facebook,
+            twitter,
+            dribbble,
+            behance,
+            telephone,
+            work_experience,
+            education,
+            skills,
+            projects,
+            certifications
+        } = req.body;
+        systemLogger.info(`Jobs: APPLICANT NAME: ${name}, EMAIL: ${email}`);
 
-    const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY! });
-    const resume = JSON.stringify({ resume: req.body });
+        const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY! });
+        const resume = JSON.stringify({ resume: req.body });
 
-    const prompt = `Role: Act as an expert Senior Technical Recruiter and ATS Parser.
+        const prompt = `Role: Act as an expert Senior Technical Recruiter and ATS Parser.
 
         Task: Compare the provided [Resume] against the [Job Description] and [Job Requirements]. Assign a total Suitability Score out of 100 based on the following weighted criteria:
 
@@ -69,85 +89,103 @@ jobsRouter.post('/:id/apply', async (req: Request, res: Response) => {
             missing_gaps: string,
         } and nothing else. no keywords before or after and no markings like \\n as the response will be on a html page `
 
-    const contents = [prompt, `[Resume] ${resume}`, `[Job Requirements] ${job.job_requirements}`, `[Job Description] ${job.job_description}`]
+        const contents = [prompt, `[Resume] ${resume}`, `[Job Requirements] ${job.job_requirements}`, `[Job Description] ${job.job_description}`];
+        systemLogger.info(`Jobs: STARTING AI PROCESSING FOR ATS SCORE`);
 
-    const response = await ai.models.generateContent({
-        model: "gemini-3-flash-preview",
-        contents: contents,
+        const response = await ai.models.generateContent({
+            model: "gemini-3-flash-preview",
+            contents: contents,
+        });
+
+
+        const ats = response.text;
+        systemLogger.info(`Jobs: AI RESPONSE GENERATED: ${ats}`);
+
+        try {
+            const { data, error } = await supabase
+                .from('applicant')
+                .insert([{
+                    job_id: id,
+                    name,
+                    email,
+                    linkedin,
+                    github,
+                    facebook,
+                    twitter,
+                    dribbble,
+                    behance,
+                    telephone,
+                    work_experience,
+                    education,
+                    skills,
+                    projects,
+                    certifications,
+                    ats
+                }]).select();
+
+            if (error) {
+                systemLogger.error(`Jobs: SUPABASE INSERT ERROR: ${error.message}`);
+                throw error;
+            }
+            systemLogger.info(`Jobs: APPLICATION SUBMITTED SUCCESSFULLY FOR ${name}`);
+            res.status(201).json(data[0]);
+
+        } catch (error) {
+            systemLogger.error(`Jobs: ${error}`);
+            res.status(500).json({ error: 'Failed to submit application' });
+        }
     });
-
-
-    const ats = response.text;
-    console.log(JSON.parse(ats!))
-
-    try {
-        const { data, error } = await supabase
-            .from('applicant')
-            .insert([{
-                job_id: id,
-                name,
-                email,
-                linkedin,
-                github,
-                facebook,
-                twitter,
-                dribbble,
-                behance,
-                telephone,
-                work_experience,
-                education,
-                skills,
-                projects,
-                certifications,
-                ats
-            }]).select();
-
-        if (error) throw error;
-        res.status(201).json(data[0]);
-
-    } catch (error) {
-        console.log(error)
-        res.status(500).json({ error: 'Failed to submit application' });
-    }
-});
 
 
 // all jobs
 jobsRouter.get("/", async (req: Request, res: Response) => {
+    systemLogger.info(`Jobs: GET ALL JOBS`);
     try {
         const { data, error } = await supabase
             .from('job')
             .select('*, organization(*)')
             .order('created_date', { ascending: false });
 
-        if (error) throw error;
+        if (error) {
+            systemLogger.error(`Jobs: SUPABASE ERROR: ${error.message}`);
+            throw error;
+        }
+        systemLogger.info(`Jobs: RETURNED ${data?.length} JOBS`);
         res.status(200).json(data);
     } catch (error) {
-        console.log(error)
+        systemLogger.error(`Jobs: ${error}`);
         res.status(500).json({ error: 'Failed to fetch jobs' });
     }
 })
 
 
 
-jobsRouter.get("/:id", async (req: Request, res: Response) => {
-    try {
+jobsRouter.get("/:id",
+    [
+        param('id').isString().notEmpty().withMessage('Job ID must be provided')
+    ],
+    handleValidationErrors,
+    async (req: Request, res: Response) => {
         const { id } = req.params;
-        const { data: job, error: jobError } = await supabase
-            .from('job')
-            .select('*')
-            .eq('id', id)
-            .single();
+        systemLogger.info(`Jobs: GET SINGLE JOB ID: ${id}`);
+        try {
+            const { data: job, error: jobError } = await supabase
+                .from('job')
+                .select('*')
+                .eq('id', id)
+                .single();
 
-        if (jobError || !job) {
-            return res.status(404).json({ error: 'Job not found' });
+            if (jobError || !job) {
+                systemLogger.error(`Jobs: JOB NOT FOUND OR DB ERROR: ${jobError?.message}`);
+                return res.status(404).json({ error: 'Job not found' });
+            }
+
+            systemLogger.info(`Jobs: RETURNED JOB DATA FOR ID: ${id}`);
+            res.status(200).json(job);
+        } catch (error) {
+            systemLogger.error(`Jobs: ${error}`);
+            res.status(500).json({ error: 'Failed to fetch jobs' });
         }
-
-        res.status(200).json(job);
-    } catch (error) {
-        console.log(error)
-        res.status(500).json({ error: 'Failed to fetch jobs' });
-    }
-})
+    })
 
 export default jobsRouter;
