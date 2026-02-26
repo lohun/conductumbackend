@@ -475,7 +475,7 @@ router.post("/chatbot/:id",
 
                 Constraint: You must return your analysis strictly in the following JSON format:
 
-                JSON
+                
                 {
                 "summary": "A high-level overview of the applicant pool, highlighting overall quality and any major concerns or trends found.",
                 "applicants": [
@@ -488,7 +488,7 @@ router.post("/chatbot/:id",
                 }
         `;
 
-            const contents = [`[instruction] ${prompt}`, `[Job_Requirements] ${JSON.stringify(applicants)}`, `[applicants] ${JSON.stringify(applicants)}`];
+            const contents = [system, `[instruction] ${prompt}`, `[Job_Requirements] ${JSON.stringify(applicants)}`, `[applicants] ${JSON.stringify(applicants)}`];
 
             const response = await ai.models.generateContent({
                 model: "gemini-3-flash-preview",
@@ -504,7 +504,9 @@ router.post("/chatbot/:id",
                 return res.status(500).json({ error: 'There was an error, please try again later' });
             }
 
-            res.json({ message: response.text });
+            const filteredResponse = JSON.parse(response.text!);
+
+            res.json({ message: filteredResponse });
 
         } catch (error) {
             systemLogger.error(`Recruiter: ${error}`);
