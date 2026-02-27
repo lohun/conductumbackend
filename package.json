@@ -26,6 +26,7 @@
     "dotenv": "^17.3.1",
     "express": "^5.2.1",
     "express-validator": "^7.3.0",
+    "google-auth-library": "^9.6.3",
     "gtoken": "^8.0.0",
     "morgan": "^1.10.1",
     "multer": "^2.0.2",
@@ -47,5 +48,8 @@
     "nodemon": "^3.1.11",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3"
+  },
+  "overrides": {
+    "google-auth-library": "^9.6.3"
   }
 }
