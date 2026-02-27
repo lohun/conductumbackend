@@ -504,9 +504,8 @@ router.post("/chatbot/:id",
                 return res.status(500).json({ error: 'There was an error, please try again later' });
             }
 
-            const filteredResponse = JSON.parse(response.text!);
 
-            res.json({ message: filteredResponse });
+            res.json({ message: response.text });
 
         } catch (error) {
             systemLogger.error(`Recruiter: ${error}`);

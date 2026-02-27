@@ -15,7 +15,7 @@ const port = process.env.PORT || 8000;
 // Configure CORS middleware
 app.use(
     cors({
-        origin: ["http://127.0.0.1:8080", "http://localhost:8080", "https://conductumhr.netlify.app/"],
+        origin: ["http://127.0.0.1:8080", "http://localhost:8080", "https://conductumhr.netlify.app"],
         methods: ["GET", "POST", "PUT", "DELETE"],
         credentials: true,
     })
