@@ -59,6 +59,14 @@ export const auth = betterAuth({
             },
         },
     },
+    advanced: {
+        defaultCookieAttributes: {
+            sameSite: "none",
+            secure: true,
+            httpOnly: true,
+        },
+    },
+
     trustedOrigins: ["http://localhost:8080", "http://127.0.0.1:8080", "https://conductum.vercel.app"]
 });
 
