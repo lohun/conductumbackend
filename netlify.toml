@@ -1,8 +1,21 @@
+[build]
+# Netlify requires a publish directory for every deployment, even for an API-only service.
+# This can be a placeholder directory.
+publish = "dist" 
+# The command to build your functions, if any. 
+command = "echo Building functions" 
+
+# Specifies the directory where your serverless functions are located.
 [functions]
-  external_node_modules = ["express"]
-  node_bundler = "esbuild"
+directory = "netlify/functions"
+# Optional: explicitly list "express" as an external module for the Netlify bundler to include.
+external_node_modules = ["express"]
+# Optional: use esbuild as the bundler (often the default).
+node_bundler = "esbuild"
+
+# Redirects all traffic from /api/* to your function endpoint.
 [[redirects]]
-  force = true
-  from = "/*"
-  status = 200
-  to = "/.netlify/functions/api/:splat"
+from = "/api/*"
+to = "/.netlify/functions/api/:splat"
+status = 200
+force = true
