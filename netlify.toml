@@ -15,7 +15,7 @@ node_bundler = "esbuild"
 
 # Redirects all traffic from /api/* to your function endpoint.
 [[redirects]]
-from = "/api/*"
+from = "/*"
 to = "/.netlify/functions/api/:splat"
 status = 200
 force = true
