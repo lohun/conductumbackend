@@ -3,7 +3,7 @@
 # This can be a placeholder directory.
 publish = "dist" 
 # The command to build your functions, if any. 
-command = "echo Building functions" 
+command = "npm run build" 
 
 # Specifies the directory where your serverless functions are located.
 [functions]
@@ -13,9 +13,9 @@ external_node_modules = ["express"]
 # Optional: use esbuild as the bundler (often the default).
 node_bundler = "esbuild"
 
-# Redirects all traffic from /api/* to your function endpoint.
+# Redirects all traffic from /* to your function endpoint.
 [[redirects]]
-from = "/app.ts"
+from = "/*"
 to = "/.netlify/functions/api/:splat"
 status = 200
 force = true
