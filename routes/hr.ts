@@ -443,8 +443,6 @@ router.post("/chatbot/:id",
 
             if (ids && ids.length > 0) {
                 query = query.in('id', ids);
-            } else {
-                query = query.eq('status', 'interview');
             }
 
             const { data: jobDescription, error: jobError } = await supabase.from('job').select('*').eq('id', id).single();
