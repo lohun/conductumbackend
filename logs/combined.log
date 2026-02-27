@@ -104,3 +104,7 @@
 {"level":"info","message":"Utility: ORGANIZATION IDENTIFIED: 37n5FTPZUWPniAZhFBqvnYdsv14GlHmp","timestamp":"2026-02-26T23:30:36.430Z"}
 {"level":"info","message":"Recruiter: ORGANIZATION ID: 37n5FTPZUWPniAZhFBqvnYdsv14GlHmp","timestamp":"2026-02-26T23:30:36.431Z"}
 {"level":"info","message":"Recruiter: RETURNED 8 APPLICATIONS","timestamp":"2026-02-26T23:30:36.695Z"}
+{"level":"info","message":"Jobs: GET ALL JOBS","timestamp":"2026-02-27T08:09:48.074Z"}
+{"level":"info","message":"Jobs: RETURNED 3 JOBS","timestamp":"2026-02-27T08:09:49.350Z"}
+{"level":"info","message":"Jobs: GET ALL JOBS","timestamp":"2026-02-27T08:17:42.757Z"}
+{"level":"info","message":"Jobs: RETURNED 3 JOBS","timestamp":"2026-02-27T08:17:43.678Z"}

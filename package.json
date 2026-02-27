@@ -5,7 +5,7 @@
   "main": "main.js",
   "scripts": {
     "build": "tsc",
-    "dev": "nodemon main.ts",
+    "dev": "nodemon app.ts",
     "start": "node app.ts"
   },
   "keywords": [],
@@ -26,8 +26,6 @@
     "dotenv": "^17.3.1",
     "express": "^5.2.1",
     "express-validator": "^7.3.0",
-    "google-auth-library": "^9.6.3",
-    "gtoken": "^8.0.0",
     "morgan": "^1.10.1",
     "multer": "^2.0.2",
     "pdf-parse-new": "^2.0.0",
