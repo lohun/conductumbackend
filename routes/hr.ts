@@ -471,7 +471,7 @@ router.post("/chatbot/:id",
 
                 Integrity Check: Identify patterns that suggest "gaming the system," such as multiple submissions under slight variations of the same name or inconsistent career timelines.
 
-                Constraint: You must return your analysis strictly in the following JSON format:
+                Constraint: You must return your analysis strictly in the following JSON format with no header or labels before or after the json data:
 
                 
                 {
